@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookshelf',
     "relationship_app",
-    "advanced_features_and_security"
 ]
 
 MIDDLEWARE = [
@@ -128,6 +127,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'list_books'
 LOGOUT_REDIRECT_URL = 'login'
 
-AUTH_USER_MODEL = "advanced_features_and_security.CustomUser"
+
+# Specify your custom user model as the default for the project
+AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+# Settings for media files (needed for profile_photo ImageField)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Make sure BASE_DIR is defined (it usually is)
