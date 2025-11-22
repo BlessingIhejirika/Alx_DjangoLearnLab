@@ -24,7 +24,8 @@ TEMPLATES_DIR = BASE_DIR / 'templates'
 SECRET_KEY = 'django-insecure-9pua%!i*(a8#3rpu(ko87t(2piftpl1s$^+#z1a8v7ks8apw_l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# set Debug to false
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookshelf',
     "relationship_app",
+"csp"
 ]
 
 MIDDLEWARE = [
@@ -50,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     # Add CSP middleware here (for Step 4)
+    'csp.middleware.CSPMiddleware',
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -134,3 +138,61 @@ AUTH_USER_MODEL = 'bookshelf.CustomUser'
 # Settings for media files (needed for profile_photo ImageField)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Make sure BASE_DIR is defined (it usually is)
+
+
+# --- CONTINUED SECURITY CONFIGURATION ---
+
+# --- HTTPS AND SECURE HEADERS CONFIGURATION (Task 3) ---
+
+# Step 1: Configure Django for HTTPS Support
+# Redirects all non-HTTPS requests to HTTPS. Essential for production.
+SECURE_SSL_REDIRECT = True
+# Tells browsers to only connect via HTTPS for the specified time (in seconds).
+# 31536000 seconds = 1 year. This is a strong security measure.
+SECURE_HSTS_SECONDS = 31536000
+# Includes subdomains in the HSTS policy.
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# Allows domain to be submitted to browser HSTS preload lists (requires strict adherence).
+SECURE_HSTS_PRELOAD = True
+
+# When running behind a reverse proxy (e.g., Nginx, Apache), Django needs to know
+# that the request is secure. The proxy adds a header like 'X-Forwarded-Proto'.
+# Configure this if SECURE_SSL_REDIRECT = True and you're behind a proxy.
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
+# Step 2: Enforce Secure Cookies
+# Ensures CSRF cookie is only sent over HTTPS.
+CSRF_COOKIE_SECURE = True
+# Ensures session cookie is only sent over HTTPS.
+SESSION_COOKIE_SECURE = True
+# Ensure this too for general cookies.
+# SESSION_COOKIE_SAMESITE = 'Lax' # Recommended for modern browsers
+
+
+# Step 3: Implement Secure Headers
+# Prevents clickjacking by disallowing embedding of your site in iframes.
+# 'DENY' completely prevents embedding. 'SAMEORIGIN' allows embedding on your own domain.
+X_FRAME_OPTIONS = 'DENY'
+# Prevents browsers from MIME-sniffing a response away from the declared Content-Type.
+SECURE_CONTENT_TYPE_NOSNIFF = True
+# Enables browser's built-in XSS filter. Note: Browsers are deprecating this. CSP is better.
+SECURE_BROWSER_XSS_FILTER = True
+# --- END SECURITY CONFIGURATION --- 
+
+
+# --- Content Security Policy (CSP) Configuration (Updated for django-csp >= 4.0) ---
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'base-uri': ("'self'",),
+        'connect-src': ("'self'",),
+        'default-src': ("'self'",),
+        'font-src': ("'self'",),
+        'form-action': ("'self'",),
+        'frame-ancestors': ("'self'",),
+        'img-src': ("'self'", 'data:'),
+        'object-src': ("'none'",),
+        'script-src': ("'self'",),
+        'style-src': ("'self'",),
+    }
+}
