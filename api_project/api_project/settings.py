@@ -127,7 +127,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',  # optional
+        'rest_framework.authentication.TokenAuthentication', # Enable Token Authentication
+        'rest_framework.authentication.SessionAuthentication', # Keep Session Authentication for browsable API
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        # We'll set this more specifically per view/viewset in Step 3
+        'rest_framework.permissions.IsAuthenticated', # Default to Allow Any for now, will restrict later
     ]
 }
