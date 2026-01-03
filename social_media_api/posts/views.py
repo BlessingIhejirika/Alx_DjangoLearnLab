@@ -1,4 +1,4 @@
-from rest_framework import viewsets, generic, status, filters
+from rest_framework import viewsets, generics, status, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Post, Comment
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
