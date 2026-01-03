@@ -1,4 +1,4 @@
-from rest_framework import viewsets, generics, status, filters
+from rest_framework import viewsets, generics, status, filters, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Post, Comment
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -31,10 +31,10 @@ class CommentViewSet(viewsets.ModelViewSet):
 class FeedView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        following_users = self.request.user.following.all()
+        following_users = self.request.user.followers.all()
         return Post.objects.filter(author__in=following_users).order_by('-creation_date')
 
 
