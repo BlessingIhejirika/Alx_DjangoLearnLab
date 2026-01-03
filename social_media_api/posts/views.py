@@ -44,14 +44,9 @@ class LikeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        # REQUIRED by checker
         post = generics.get_object_or_404(Post, pk=pk)
 
-        # REQUIRED by checker
-        like, created = Like.objects.get_or_create(
-            user=request.user,
-            post=post
-        )
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
 
         if not created:
             like.delete()
@@ -72,7 +67,3 @@ class LikeView(APIView):
             {"status": "liked"},
             status=status.HTTP_201_CREATED
         )
-
-
-
-    
